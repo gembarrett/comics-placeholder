@@ -1,0 +1,4 @@
+/node_modules
+/dist/config.php
+.sass-cache
+.DS_Store
