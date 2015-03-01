@@ -1,12 +1,11 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    compass: {                  // Task
-      dist: {                   // Target
-        options: {              // Target options
+    compass: {                  
+      dist: {                   
+        options: {              
           sassDir: 'src/scss',
           cssDir: 'dist/css',
-          environment: 'production'
         }
       },
     },
