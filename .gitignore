@@ -4,3 +4,4 @@
 .sass-cache
 .DS_Store
 /dist/config.php
+/dist/results.json

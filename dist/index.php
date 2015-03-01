@@ -11,6 +11,7 @@ $url = $baseurl.$section.$optional.'&ts='.$time.'&apikey='.$apikey.$hash;
 $contents = file_get_contents($url);
 $results = json_decode($contents);
 $characterResults = $results->data->results;
+file_put_contents('results.json', $contents);
 ?>
 
 
