@@ -27,6 +27,9 @@ file_put_contents('results.json', $contents);
 // test out putting results on page
 $characterResults = $results->data->results;
 
+$imageSize = "standard_amazing";
+
+
 ?>
 
 
@@ -34,9 +37,14 @@ $characterResults = $results->data->results;
 <html>
 <head>
   <link type="text/css" rel="stylesheet" href="css/base.css" media="all" />
+  <script type="text/javascript">
+    var test = <?php echo $time ?>;
+    console.log(test);
+  </script>
 </head>
 <body>
   <p><?php print_r($characterResults[0]->name);?></p>
   <p><?php print_r($characterResults[0]->description);?></p>
+  <img src="<?php echo $characterResults[0]->thumbnail->path."/".$imageSize.".jpg";?>" />
 </body>
 </html>
