@@ -1,6 +1,9 @@
 <?php
 // include './config.php';
 
+// terms of use state the page has to show attribution
+$attributionHTML = "<a href='http://marvel.com'>Data provided by Marvel. © 2015 MARVEL</a>";
+
 // get keys from files
 $privatekey = file_get_contents('./privkey');
 $apikey = file_get_contents('./apikey');
@@ -8,8 +11,12 @@ $apikey = file_get_contents('./apikey');
 // create the basic request
 $baseurl = 'http://gateway.marvel.com:80/v1/public/';
 $section = 'characters';
-$optional = '?name=hulk';
 $time = time();
+
+$characterName = "hulk";
+$characterFile = $characterName.'-image';
+
+$optional = '?name='.$characterName;
 
 // build hash of timestamp and keys
 $hash = '&hash='.hash('md5',$time.$privatekey.$apikey);
@@ -17,18 +24,7 @@ $hash = '&hash='.hash('md5',$time.$privatekey.$apikey);
 // create request url
 $url = $baseurl.$section.$optional.'&ts='.$time.'&apikey='.$apikey.$hash;
 
-// get the json, chuck into a variable and decode
-$contents = file_get_contents($url);
-$results = json_decode($contents);
-
-// chuck the json into a separate file - TODO: refactor so results get decoded and into file in fewer steps
-// file_put_contents('results.json', $contents);
-
-// test out putting results on page
-$characterResults = $results->data->results;
-
-$imageSize = "portrait_small";
-
+// all potential image sizes
 $sizes = [
   "portrait_small.jpg" => "50px x 75px",
   "portrait_medium.jpg" => "100px x 150px",
@@ -51,7 +47,22 @@ $sizes = [
   "detail.jpg" => "full image constrained to 500px wide"
 ];
 
-$imageURL = $characterResults[0]->thumbnail->path."/";
+// grab image link from local file if it exists
+if (file_exists($characterFile)) {
+  $imageURL = file_get_contents($characterName.'-image');
+}
+else {
+  // get the json, chuck into a variable and decode
+  $contents = json_decode(file_get_contents($url));  
+  // test out putting results on page
+  $characterResults = $contents->data->results;
+  // get the image url
+  $imageURL = $characterResults[0]->thumbnail->path."/";
+  // create name for file to hole image url
+  $fileName = $characterName.'-image';
+  // put the image url into a local file
+  file_put_contents($fileName, $imageURL);
+}
 
 ?>
 
@@ -60,21 +71,15 @@ $imageURL = $characterResults[0]->thumbnail->path."/";
 <html>
 <head>
   <link type="text/css" rel="stylesheet" href="css/base.css" media="all" />
-  <script type="text/javascript">
-    var test = <?php echo $time ?>;
-    console.log(test);
-  </script>
 </head>
 <body>
-  <?php print_r($results->attributionHTML);?>
-  <p><?php print_r($characterResults[0]->name);?></p>
-  <p><?php print_r($characterResults[0]->description);?></p>
-  <ul>
+  <?php print_r($attributionHTML);?>
+  <!-- <p><?php print_r($characterResults[0]->name);?></p>
+  <p><?php print_r($characterResults[0]->description);?></p> -->
   <?php
   foreach ($sizes as $key => $value) {
       echo "<img src='$imageURL$key' />";
   }
   ?>
-  </ul>
 </body>
 </html>
