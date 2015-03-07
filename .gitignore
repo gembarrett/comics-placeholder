@@ -6,3 +6,4 @@
 /dist/config.php
 /dist/results.json
 /dist/jquery-2.1.3.min.js
+/dist/*-image
